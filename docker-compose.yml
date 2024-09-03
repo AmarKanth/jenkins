@@ -7,7 +7,7 @@ services:
         ports:
             - "8080:8080"
         volumes:
-            - ./jenkins/home:/var/jenkins_home
+            - jenkins-data:/var/jenkins_home
             - ./ansible:/ansible
             - /var/run/docker.sock:/var/run/docker.sock
     centos:
@@ -24,3 +24,4 @@ services:
             - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql
 volumes:
     dev-db-data:
+    jenkins-data:
