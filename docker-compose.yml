@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+    jenkins:
+        container_name: jenkins
+        build: ./jenkins
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./jenkins/home:/var/jenkins_home
+            - /var/run/docker.sock:/var/run/docker.sock
+    centos:
+        container_name: centos
+        build: ./centos
+    mysql:
+        container_name: mysql
+        image: mysql:5.7
+        environment:
+            - "MYSQL_ROOT_PASSWORD=1234"
+            - "MYSQL_DATABASE=testdb"
+        volumes:
+            - dev-db-data:/var/lib/mysql
+            - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql
+volumes:
+    dev-db-data:
