@@ -21,7 +21,8 @@ services:
             - "MYSQL_DATABASE=testdb"
         volumes:
             - dev-db-data:/var/lib/mysql
-            - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql
+            - ./people.txt:/tmp/people.txt
+            - ./seed.sh:/tmp/seed.sh
 volumes:
     dev-db-data:
     jenkins-data:
