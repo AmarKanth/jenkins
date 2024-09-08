@@ -19,6 +19,9 @@ RUN yum -y install mysql
 
 RUN curl -O https://bootstrap.pypa.io/pip/3.6/get-pip.py && python3 get-pip.py && pip3 install awscli --upgrade
 
+COPY script.sh ./home/remote_user/script.sh
+RUN chmod +x ./home/remote_user/script.sh
+
 RUN ssh-keygen -A
 
 CMD ["/usr/sbin/sshd", "-D"]

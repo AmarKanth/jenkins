@@ -24,6 +24,7 @@ services:
             - dev-db-data:/var/lib/mysql
             - ./people.txt:/tmp/people.txt
             - ./seed.sh:/tmp/seed.sh
+            - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
 volumes:
     dev-db-data:
     jenkins-data:
