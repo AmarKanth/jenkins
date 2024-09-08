@@ -1,4 +1,4 @@
-### jenkins_ansible
+### jenkins
 ```
 sudo chown 1000:1000 /var/run/docker.sock
 ansible -i /ansible/inventory -m ping test1
