@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+    jenkins:
+        container_name: jenkins
+        build: ./jenkins
+        ports:
+            - "8080:8080"
+        restart: always
+        volumes:
+            - jenkins-data:/var/jenkins_home
+            - ./ansible:/ansible
+            - /var/run/docker.sock:/var/run/docker.sock
+    centos:
+        container_name: centos
+        build: ./centos
+    mysql:
+        container_name: mysql
+        image: mysql:5.7
+        environment:
+            - "MYSQL_ROOT_PASSWORD=1234"
+            - "MYSQL_DATABASE=testdb"
+        volumes:
+            - dev-db-data:/var/lib/mysql
+            - ./people.txt:/tmp/people.txt
+            - ./seed.sh:/tmp/seed.sh
+            - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+volumes:
+    dev-db-data:
+    jenkins-data:
