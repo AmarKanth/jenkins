@@ -1,0 +1,2 @@
+- Create ec2 with jenkins/docker pre-installed
+- Create jenkins pipeline and setup scm
