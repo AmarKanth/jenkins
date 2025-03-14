@@ -1,2 +1,2 @@
-- Create ec2 with jenkins/docker pre-installed
-- Create jenkins pipeline and setup scm
+- Create an EC2 instance with Jenkins and Docker pre-installed
+- Create SSH credentials with a private key and Jenkins pipeline
