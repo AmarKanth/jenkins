@@ -3,6 +3,8 @@
 > Docker & Jenkins Installation
 ```
 #!/bin/bash
+set -e
+
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -44,6 +46,10 @@ sudo usermod -aG docker jenkins
 
 sudo systemctl start jenkins
 sudo systemctl enable jenkins
+
+echo "###############################################" >> /var/log/user-data-status.log
+echo "#         User data script COMPLETED          #" >> /var/log/user-data-status.log
+echo "###############################################" >> /var/log/user-data-status.log
 ```
 
 - Create SSH credentials with a private key and Jenkins pipeline
