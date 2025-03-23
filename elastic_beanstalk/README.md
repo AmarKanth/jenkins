@@ -1,6 +1,6 @@
 - Create an EC2 instance with Jenkins and Docker pre-installed
 
-< Docker Installation
+> Docker Installation
 ```
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
@@ -25,7 +25,7 @@ sudo systemctl start docker
 #sudo reboot
 ```
 
-< Jenkins Installation
+> Jenkins Installation
 ```
 sudo apt-get update
 sudo apt install fontconfig openjdk-17-jre
