@@ -17,18 +17,16 @@ sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 sudo usermod -aG docker ubuntu
-sudo su - ubuntu -c "newgrp docker && docker --version"
+sudo su - ubuntu -c "sg docker -c 'docker --version'"
 
 sudo systemctl enable docker
 sudo systemctl start docker
-
-#sudo reboot
 ```
 
 > Jenkins Installation
 ```
 sudo apt-get update
-sudo apt install fontconfig openjdk-17-jre
+sudo apt install -y fontconfig openjdk-17-jre
 
 sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
 https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
@@ -38,7 +36,7 @@ https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
 /etc/apt/sources.list.d/jenkins.list > /dev/null
 
 sudo apt-get update
-sudo apt-get install jenkins
+sudo apt-get install -y jenkins
 
 sudo systemctl start jenkins
 sudo systemctl enable jenkins
