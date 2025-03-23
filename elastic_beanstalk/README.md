@@ -1,7 +1,8 @@
 - Create an EC2 instance with Jenkins and Docker pre-installed
 
-> Docker Installation
+> Docker & Jenkins Installation
 ```
+#!/bin/bash
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -14,17 +15,19 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt-get install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-compose-plugin
 
 sudo usermod -aG docker ubuntu
 sudo su - ubuntu -c "sg docker -c 'docker --version'"
 
 sudo systemctl enable docker
 sudo systemctl start docker
-```
 
-> Jenkins Installation
-```
 sudo apt-get update
 sudo apt install -y fontconfig openjdk-17-jre
 
@@ -37,6 +40,7 @@ https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
 
 sudo apt-get update
 sudo apt-get install -y jenkins
+sudo usermod -aG docker jenkins
 
 sudo systemctl start jenkins
 sudo systemctl enable jenkins
