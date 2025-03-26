@@ -53,3 +53,9 @@ echo "###############################################" >> /var/log/user-data-sta
 ```
 
 - Create SSH credentials with a private key and Jenkins pipeline
+
+> Test Jenkins access to github
+```
+sudo su - jenkins
+ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 git@github.com
+```
