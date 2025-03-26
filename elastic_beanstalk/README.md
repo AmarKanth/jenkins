@@ -59,3 +59,5 @@ echo "###############################################" >> /var/log/user-data-sta
 sudo su - jenkins
 ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 git@github.com
 ```
+
+- Create Elastic Beanstalk application
