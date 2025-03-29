@@ -55,10 +55,11 @@ sudo systemctl enable jenkins
 
 # --- Install AWS CLI v2 ---
 cd /tmp
+sudo apt-get install -y unzip
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip -q awscliv2.zip
 sudo ./aws/install
-rm -rf aws awscliv2.zip
+sudo rm -rf aws awscliv2.zip
 
 # --- Logging ---
 echo "###############################################" >> /var/log/user-data-status.log
