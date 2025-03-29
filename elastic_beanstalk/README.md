@@ -31,11 +31,9 @@ sudo su - ubuntu -c "sg docker -c 'docker --version'"
 sudo systemctl enable docker
 sudo systemctl start docker
 
-
 # --- Install Java (for Jenkins) ---
 sudo apt-get update
 sudo apt install -y fontconfig openjdk-17-jre
-
 
 # --- Install Jenkins ---
 sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
@@ -52,7 +50,6 @@ sudo usermod -aG docker jenkins
 sudo systemctl start jenkins
 sudo systemctl enable jenkins
 
-
 # --- Install AWS CLI v2 ---
 cd /tmp
 sudo apt-get install -y unzip
@@ -60,11 +57,6 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip -q awscliv2.zip
 sudo ./aws/install
 sudo rm -rf aws awscliv2.zip
-
-# --- Logging ---
-echo "###############################################" >> /var/log/user-data-status.log
-echo "#         User data script COMPLETED          #" >> /var/log/user-data-status.log
-echo "###############################################" >> /var/log/user-data-status.log
 ```
 
 - Create SSH credentials with a private key and Jenkins pipeline
