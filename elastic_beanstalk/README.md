@@ -75,8 +75,38 @@ sudo su - jenkins
 ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 git@github.com
 ```
 
-- Create aws-role with given policies and create credentails for aws-screct-key and access-key in jenkins
-1. AWSElasticBeanstalkFullAccess
-2. AmazonS3FullAccess
+- Create JenkinsElasticBeanstalkRole with given policies and create credentails for aws-screct-key and access-key in jenkins
+> JenkinsElasticBeanstalkPolicy
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ElasticBeanstalkActions",
+            "Effect": "Allow",
+            "Action": [
+                "elasticbeanstalk:CreateApplicationVersion",
+                "elasticbeanstalk:UpdateEnvironment",
+                "elasticbeanstalk:DescribeEnvironments",
+                "elasticbeanstalk:DescribeApplicationVersions"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "S3AccessForAppBundles",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::YOUR-BUCKET-NAME",
+                "arn:aws:s3:::YOUR-BUCKET-NAME/*"
+            ]
+        }
+    ]
+}
+```
 
 - Create Elastic Beanstalk application
