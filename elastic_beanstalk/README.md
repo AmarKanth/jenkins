@@ -60,4 +60,8 @@ sudo su - jenkins
 ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 git@github.com
 ```
 
+- Create credentails for aws screct key and access key with given policies
+> AWSElasticBeanstalkFullAccess
+> AmazonS3FullAccess
+
 - Create Elastic Beanstalk application
