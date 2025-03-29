@@ -67,35 +67,60 @@ sudo su - jenkins
 ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 git@github.com
 ```
 
-- Create JenkinsElasticBeanstalkRole with given policies and create credentails for aws-screct-key and access-key in jenkins
+- Create JenkinsElasticBeanstalkRole with given policies and attach the role 
+to jenkins ec2 instance
+
 > JenkinsElasticBeanstalkPolicy
 ```
 {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "ElasticBeanstalkActions",
+            "Sid": "ElasticBeanstalkFullAccess",
+            "Effect": "Allow",
+            "Action": "elasticbeanstalk:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "S3FullAccessToEBBucket",
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "YOUR-S3-BUCKET-NAME",
+                "arn:aws:s3:::YOUR-S3-BUCKET-NAME/*"
+            ]
+        },
+        {
+            "Sid": "CloudFormationAccess",
+            "Effect": "Allow",
+            "Action": "cloudformation:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "GeneralSupport",
             "Effect": "Allow",
             "Action": [
-                "elasticbeanstalk:CreateApplicationVersion",
-                "elasticbeanstalk:UpdateEnvironment",
-                "elasticbeanstalk:DescribeEnvironments",
-                "elasticbeanstalk:DescribeApplicationVersions"
+                "logs:*"
             ],
             "Resource": "*"
         },
         {
-            "Sid": "S3AccessForAppBundles",
+            "Sid": "RestrictPassRoleToElasticBeanstalkService",
             "Effect": "Allow",
-            "Action": [
-                "s3:PutObject",
-                "s3:GetObject",
-                "s3:ListBucket"
-            ],
-            "Resource": [
-                "arn:aws:s3:::YOUR-BUCKET-NAME",
-                "arn:aws:s3:::YOUR-BUCKET-NAME/*"
-            ]
+            "Action": "iam:PassRole",
+            "Resource": "YOUR-ELASTIC-BEANSTALK-SERIVE-ROLE-ARN"
+        },
+        {
+            "Sid": "AutoScalingFullAccess",
+            "Effect": "Allow",
+            "Action": "autoscaling:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "EC2FullAccess",
+            "Effect": "Allow",
+            "Action": "ec2:*",
+            "Resource": "*"
         }
     ]
 }
