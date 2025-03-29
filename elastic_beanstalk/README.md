@@ -74,7 +74,7 @@ sudo su - jenkins
 ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 git@github.com
 ```
 
-- Create aws-role with given policies and create credentails for aws-screct-key and access-key on jenkins
+- Create aws-role with given policies and create credentails for aws-screct-key and access-key in jenkins
 1. AWSElasticBeanstalkFullAccess
 2. AmazonS3FullAccess
 
