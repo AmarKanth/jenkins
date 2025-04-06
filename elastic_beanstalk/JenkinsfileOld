@@ -1,0 +1,93 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = 'frontend'
+        PROJECT_DIR = '/var/lib/jenkins/workspace/test-pipeline/jenkins/elastic_beanstalk'
+        FRONTEND_DIR = 'frontend'
+        ZIP_FILE = 'frontend-app.zip'
+        EB_APP_NAME = 'eb-test-app'
+        EB_ENV_NAME = 'Eb-test-app-env'
+        S3_BUCKET = 'elasticbeanstalk-ap-south-1-058264205719'
+        VERSION_LABEL = "build-${BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                sshagent(['my-github-ssh']) {
+                    sh '''
+                        if [ -d "jenkins" ]; then
+                            rm -rf jenkins
+                        fi
+                        git clone git@github.com:AmarKanth/jenkins.git
+                    '''
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh '''
+                        cd ${PROJECT_DIR}/${FRONTEND_DIR}
+                        docker build -t ${IMAGE_NAME} -f Dockerfile.dev .
+                    '''
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    sh "docker run --rm -e CI=true ${IMAGE_NAME} npm run test"
+                }
+            }
+        }
+
+        stage('Package and Upload to S3') {
+            steps {
+                script {
+                    sh '''
+                        cd ${PROJECT_DIR}/${FRONTEND_DIR}
+                        zip -r ${ZIP_FILE} . -x node_modules/*
+                        aws s3 cp ${ZIP_FILE} s3://${S3_BUCKET}/${ZIP_FILE}
+                    '''
+                }
+            }
+        }
+
+        stage('Create Application Version') {
+            steps {
+                script {
+                    sh '''
+                        aws elasticbeanstalk create-application-version \
+                            --application-name ${EB_APP_NAME} \
+                            --version-label ${VERSION_LABEL} \
+                            --source-bundle S3Bucket=${S3_BUCKET},S3Key=${ZIP_FILE}
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Elastic Beanstalk') {
+            steps {
+                script {
+                    sh '''
+                        aws elasticbeanstalk update-environment \
+                            --environment-name ${EB_ENV_NAME} \
+                            --version-label ${VERSION_LABEL}
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                sh "docker system prune -f"
+            }
+        }
+    }
+}
