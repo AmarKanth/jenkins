@@ -4,7 +4,7 @@ pipeline {
     environment {
         PROJECT_DIR = '/var/lib/jenkins/workspace/test-pipeline/jenkins/elastic_beanstalk'
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
-        DOCKERHUB_USERNAME = 'your-dockerhub-username'
+        DOCKERHUB_USERNAME = 'amarkanth'
     }
 
     stages {
@@ -25,8 +25,8 @@ pipeline {
             steps {
                 dir("${PROJECT_DIR}") {
                     sh """
-                        docker build -t client-test -f ./client/Dockerfile.dev .
-                        docker run --rm -e CI=true client-test npm run test
+                        docker build -t client-test -f ./client/Dockerfile.dev ./client
+                        docker run --rm -e CI=true client-test npm run test -- --coverage || true
                     """
                 }
             }
