@@ -1,0 +1,76 @@
+pipeline {
+    agent any
+
+    environment {
+        PROJECT_DIR = '/var/lib/jenkins/workspace/test-pipeline/jenkins/elastic_beanstalk'
+        DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
+        DOCKERHUB_USERNAME = 'your-dockerhub-username'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                sshagent(['my-github-ssh']) {
+                    sh """
+                        if [ -d "jenkins" ]; then
+                            rm -rf jenkins
+                        fi
+                        git clone git@github.com:AmarKanth/jenkins.git
+                    """
+                }
+            }
+        }
+
+        stage('Build Docker Image And Run Tests') {
+            steps {
+                dir("${PROJECT_DIR}") {
+                    sh """
+                        docker build -t client-test -f ./client/Dockerfile.dev .
+                        docker run --rm -e CI=true client-test npm run test
+                    """
+                }
+            }
+        }
+
+        stage('Build Prod Docker Images') {
+            steps {
+                dir("${PROJECT_DIR}") {
+                    sh """
+                        docker build -t client ./client
+                        docker build -t nginx ./nginx
+                        docker build -t server ./server
+                        docker build -t worker ./worker
+                    """
+                }
+            }
+        }
+
+        stage('Push Prod Images to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                        echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
+                        
+                        docker tag client ${DOCKERHUB_USERNAME}/client:latest
+                        docker tag nginx ${DOCKERHUB_USERNAME}/nginx:latest
+                        docker tag server ${DOCKERHUB_USERNAME}/server:latest
+                        docker tag worker ${DOCKERHUB_USERNAME}/worker:latest
+
+                        docker push ${DOCKERHUB_USERNAME}/client:latest
+                        docker push ${DOCKERHUB_USERNAME}/nginx:latest
+                        docker push ${DOCKERHUB_USERNAME}/server:latest
+                        docker push ${DOCKERHUB_USERNAME}/worker:latest
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                sh "docker system prune -f"
+            }
+        }
+    }
+}
