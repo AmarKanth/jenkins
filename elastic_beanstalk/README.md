@@ -86,8 +86,8 @@ to jenkins ec2 instance
             "Effect": "Allow",
             "Action": "s3:*",
             "Resource": [
-                "YOUR-S3-BUCKET-NAME",
-                "arn:aws:s3:::YOUR-S3-BUCKET-NAME/*"
+                "arn:aws:s3:::elasticbeanstalk-ap-south-1-058264205719",
+                "arn:aws:s3:::elasticbeanstalk-ap-south-1-058264205719/*"
             ]
         },
         {
@@ -108,7 +108,7 @@ to jenkins ec2 instance
             "Sid": "RestrictPassRoleToElasticBeanstalkService",
             "Effect": "Allow",
             "Action": "iam:PassRole",
-            "Resource": "YOUR-ELASTIC-BEANSTALK-SERIVE-ROLE-ARN"
+            "Resource": "arn:aws:iam::058264205719:role/service-role/aws-elasticbeanstalk-service-role"
         },
         {
             "Sid": "AutoScalingFullAccess",
@@ -120,6 +120,26 @@ to jenkins ec2 instance
             "Sid": "EC2FullAccess",
             "Effect": "Allow",
             "Action": "ec2:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "ECSAccess",
+            "Effect": "Allow",
+            "Action": [
+                "ecs:RegisterTaskDefinition",
+                "ecs:DeregisterTaskDefinition",
+                "ecs:DescribeTaskDefinition",
+                "ecs:ListTaskDefinitions"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "AllowECSTaggingAllResources",
+            "Effect": "Allow",
+            "Action": [
+                "ecs:TagResource",
+                "ecs:UntagResource"
+            ],
             "Resource": "*"
         }
     ]
