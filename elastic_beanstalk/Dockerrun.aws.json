@@ -1,36 +1,85 @@
 {
-	"AWSEBDockerrunVersion": 2,
-	"containerDefinitions": [
-		{
-			"name": "client",
-			"image": "amarkanth/client",
-			"hostname": "client",
-			"essential": false
-		},
-		{
-			"name": "server",
-			"image": "amarkanth/server",
-			"hostname": "api",
-			"essential": false
-		},
-		{
-			"name": "worker",
-			"image": "amarkanth/worker",
-			"hostname": "worker",
-			"essential": false
-		},
-		{
-			"name": "nginx",
-			"image": "amarkanth/nginx",
-			"hostname": "nginx",
-			"essential": true,
-			"portMappings": [
-				{
-					"hostPort": 80,
-					"containerPort": 80
-				}
-			],
-			"links": ["client", "server"]
-		}
-	]
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "client",
+      "image": "amarkanth/client",
+      "hostname": "client",
+      "essential": false,
+      "memory": 256,
+      "memoryReservation": 128,
+      "environment": [
+        {
+          "name": "WDS_SOCKET_PORT",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "name": "server",
+      "image": "amarkanth/server",
+      "hostname": "api",
+      "essential": false,
+      "memory": 512,
+      "memoryReservation": 256,
+      "environment": [
+        { "name": "REDIS_HOST", "value": "redis" },
+        { "name": "REDIS_PORT", "value": "6379" },
+        { "name": "PGUSER", "value": "postgres" },
+        { "name": "PGHOST", "value": "postgres" },
+        { "name": "PGDATABASE", "value": "postgres" },
+        { "name": "PGPASSWORD", "value": "postgres_password" },
+        { "name": "PGPORT", "value": "5432" }
+      ]
+    },
+    {
+      "name": "worker",
+      "image": "amarkanth/worker",
+      "hostname": "worker",
+      "essential": false,
+      "memory": 256,
+      "memoryReservation": 128,
+      "environment": [
+        { "name": "REDIS_HOST", "value": "redis" },
+        { "name": "REDIS_PORT", "value": "6379" }
+      ]
+    },
+    {
+      "name": "nginx",
+      "image": "amarkanth/nginx",
+      "hostname": "nginx",
+      "essential": true,
+      "memory": 128,
+      "memoryReservation": 64,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links": ["client", "server", "worker"]
+    },
+    {
+      "name": "postgres",
+      "image": "postgres:latest",
+      "hostname": "postgres",
+      "essential": false,
+      "memory": 512,
+      "memoryReservation": 256,
+      "environment": [
+        {
+          "name": "POSTGRES_PASSWORD",
+          "value": "postgres_password"
+        }
+      ]
+    },
+    {
+      "name": "redis",
+      "image": "redis:latest",
+      "hostname": "redis",
+      "essential": false,
+      "memory": 128,
+      "memoryReservation": 64
+    }
+  ]
 }

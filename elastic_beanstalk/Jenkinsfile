@@ -2,9 +2,13 @@ pipeline {
     agent any
 
     environment {
-        PROJECT_DIR = '/var/lib/jenkins/workspace/test-pipeline/jenkins/elastic_beanstalk'
-        DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
-        DOCKERHUB_USERNAME = 'amarkanth'
+        PROJECT_DIR = "/var/lib/jenkins/workspace/test-pipeline/jenkins/elastic_beanstalk"
+        DOCKERHUB_CREDENTIALS_ID = "dockerhub-credentials"
+        DOCKERHUB_USERNAME = "amarkanth"
+        EB_APP_NAME = "eb-test-app"
+        EB_ENV_NAME = "Eb-test-app-env-3"
+        S3_BUCKET = "elasticbeanstalk-ap-south-1-058264205719"
+        VERSION = "build-${BUILD_NUMBER}"
     }
 
     stages {
@@ -60,6 +64,44 @@ pipeline {
                         docker push ${DOCKERHUB_USERNAME}/nginx:latest
                         docker push ${DOCKERHUB_USERNAME}/server:latest
                         docker push ${DOCKERHUB_USERNAME}/worker:latest
+                    """
+                }
+            }
+        }
+
+        stage('Prepare Deployment Bundle') {
+            steps {
+                dir("${PROJECT_DIR}") {
+                    script {
+                        sh """
+                            zip -r deploy.zip Dockerrun.aws.json
+                            aws s3 cp deploy.zip s3://${S3_BUCKET}/deploy-${VERSION}.zip
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Create Application Version') {
+            steps {
+                script {
+                    sh """
+                        aws elasticbeanstalk create-application-version \
+                            --application-name ${EB_APP_NAME} \
+                            --version-label ${VERSION} \
+                            --source-bundle S3Bucket=${S3_BUCKET},S3Key=deploy-${VERSION}.zip
+                    """
+                }
+            }
+        }
+
+        stage('Deploy to Elastic Beanstalk') {
+            steps {
+                script {
+                    sh """
+                        aws elasticbeanstalk update-environment \
+                            --environment-name ${EB_ENV_NAME} \
+                            --version-label ${VERSION}
                     """
                 }
             }
