@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "helm_deployment.fullname" . }}
+  name: {{ include "couponservice.fullname" . }}
   labels:
-    {{- include "helm_deployment.labels" . | nindent 4 }}
+    {{- include "couponservice.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "helm_deployment.selectorLabels" . | nindent 6 }}
+      {{- include "couponservice.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "helm_deployment.labels" . | nindent 8 }}
+        {{- include "couponservice.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
