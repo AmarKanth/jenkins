@@ -1,15 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "django-helm-chart.fullname" . }}
+  name: {{ .Values.djangoapp.serviceName }}
   labels:
-    {{- include "django-helm-chart.labels" . | nindent 4 }}
+    app: {{ .Values.djangoapp.name }}
 spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+  type: {{ .Values.djangoapp.serviceType }}
   selector:
-    {{- include "django-helm-chart.selectorLabels" . | nindent 4 }}
+    app: {{ .Values.djangoapp.name }}
+  ports:
+    - port: 80
+      targetPort: {{ .Values.djangoapp.image.containerPort }}
+      protocol: TCP
