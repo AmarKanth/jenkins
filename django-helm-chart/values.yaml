@@ -8,7 +8,7 @@ djangoapp:
   replicaCount: 3
   image:
     repository: amarkanth/django-helm-test
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: "latest"
     containerPort: 8000
   command: 'python manage.py runserver -b 0.0.0.0:8000'
