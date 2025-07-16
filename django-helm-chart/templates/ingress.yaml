@@ -13,6 +13,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ .Values.djangoapp.serviceName }}
+                name: {{ .Values.djangoapp.service.name }}
                 port:
-                  number: {{ .Values.djangoapp.servicePort }}
+                  number: {{ .Values.djangoapp.service.port }}

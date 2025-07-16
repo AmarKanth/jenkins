@@ -1,17 +1,58 @@
 djangoapp:
-  name: django
-  deploymentName: django-deployment
-  serviceName: django-service
-  serviceType: ClusterIP
-  servicePort: 80
-  containerName: django-container
-  replicaCount: 3
-  image:
-    repository: amarkanth/django-helm-test
-    pullPolicy: Always
-    tag: "latest"
-    containerPort: 8000
-  command: 'python manage.py runserver -b 0.0.0.0:8000'
+  label:
+    app: django
+    tier: backend
+    environment: dev
+
+  container:
+    name: django-container
+    image:
+      repository: amarkanth/django-helm-test
+      tag: "latest"
+      pullPolicy: Always
+    port: 8000
+    command: ["python", "manage.py", "runserver", "-b", "0.0.0.0:8000"]
+
+  deployment:
+    name: django-deployment
+    replicaCount: 3
+
+  service:
+    name: django-service
+    type: ClusterIP
+    port: 80
+
+database:
+  label:
+    app: postgres
+    tier: database
+    environment: dev
+
+  deployment:
+    name: postgres-deployment
+    replicaCount: 1
+
+  service:
+    name: postgres-service
+    type: ClusterIP
+    port: 5432
+
+  container:
+    name: postgres-container
+    port: 5432
+    image:
+      repository: postgres
+      tag: "14"
+      pullPolicy: IfNotPresent
+    env:
+      POSTGRES_DB: devdb
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: changeme
+    volume:
+      name: db-storage
+      mountPath: /var/lib/postgresql/data
+      hostPath: /mnt/data/db
+      type: DirectoryOrCreate
 
 imagePullSecrets: []
 nameOverride: ""

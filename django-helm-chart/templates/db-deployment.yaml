@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.database.deployment.name }}
+spec:
+  replicas: {{ .Values.database.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.database.label.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.database.label.app }}
+    spec:
+      containers:
+      - name: {{ .Values.database.container.name }}
+        image: "{{ .Values.database.container.image.repository }}:{{ .Values.database.container.image.tag }}"
+        imagePullPolicy: {{ .Values.database.container.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.database.container.port }}
+        volumeMounts:
+        - name: {{ .Values.database.container.volume.name }}
+          mountPath: {{ .Values.database.container.volume.mountPath }}
+      volumes:
+      - name: {{ .Values.database.container.volume.name }}
+        hostPath:
+          path: {{ .Values.database.container.volume.hostPath }}
+          type: {{ .Values.database.container.volume.type }}

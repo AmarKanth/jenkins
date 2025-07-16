@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.djangoapp.deployment.name }}
+  labels:
+    app: {{ .Values.djangoapp.label.app }}
+spec:
+  replicas: {{ .Values.djangoapp.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.djangoapp.label.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.djangoapp.label.app }}
+    spec:
+      containers:
+        - name: {{ .Values.djangoapp.container.name }}
+          image: "{{ .Values.djangoapp.container.image.repository }}:{{ .Values.djangoapp.container.image.tag }}"
+          imagePullPolicy: {{ .Values.djangoapp.container.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.djangoapp.container.port }}
