@@ -18,6 +18,13 @@ spec:
         imagePullPolicy: {{ .Values.database.container.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.database.container.port }}
+        env:
+        - name: POSTGRES_USER
+          value: devuser
+        - name: POSTGRES_PASSWORD
+          value: changeme
+        - name: POSTGRES_DB
+          value: devdb
         volumeMounts:
         - name: {{ .Values.database.container.volume.name }}
           mountPath: {{ .Values.database.container.volume.mountPath }}

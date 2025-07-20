@@ -22,6 +22,9 @@ djangoapp:
     type: ClusterIP
     port: 80
 
+  ingress:
+    name: django-ingress
+
 database:
   label:
     app: postgres
