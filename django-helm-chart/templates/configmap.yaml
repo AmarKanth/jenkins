@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": before-hook-creation
+data:
+  POSTGRES_DB: {{ .Values.database.container.env.POSTGRES_DB }}
+  POSTGRES_HOST: {{ .Values.database.service.name }}
+  POSTGRES_PORT: {{ .Values.database.container.port }}
+  POSTGRES_USER: {{ .Values.database.container.POSTGRES_USER }}
+  POSTGRES_PASSWORD: {{ .Values.database.container.POSTGRES_PASSWORD }}

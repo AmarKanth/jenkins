@@ -18,13 +18,9 @@ spec:
         imagePullPolicy: {{ .Values.database.container.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.database.container.port }}
-        env:
-        - name: POSTGRES_USER
-          value: devuser
-        - name: POSTGRES_PASSWORD
-          value: changeme
-        - name: POSTGRES_DB
-          value: devdb
+        envFrom:
+        - configMapRef:
+            name: postgres-config
         volumeMounts:
         - name: {{ .Values.database.container.volume.name }}
           mountPath: {{ .Values.database.container.volume.mountPath }}
@@ -33,3 +29,20 @@ spec:
         hostPath:
           path: {{ .Values.database.container.volume.hostPath }}
           type: {{ .Values.database.container.volume.type }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.database.service.name }}
+  labels:
+    app: {{ .Values.database.label.app }}
+spec:
+  type: {{ .Values.database.service.type }}
+  selector:
+    app: {{ .Values.database.label.app }}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.database.service.port }}
+    targetPort: {{ .Values.database.service.port }}
